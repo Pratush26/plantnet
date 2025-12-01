@@ -26,18 +26,18 @@ export const router = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: '/plant/:id',
+        path: 'plant/:id',
         element: <PlantDetails />,
       },
+      {
+        path: 'login',
+        element: <Login />
+      },
+      {
+        path: 'signup',
+        element: <SignUp />
+      },
     ],
-  },
-  {
-    path: '/login',
-    element: <Login />
-  },
-  {
-    path: '/signup',
-    element: <SignUp />
   },
   {
     path: '/dashboard',
