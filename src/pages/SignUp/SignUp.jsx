@@ -3,6 +3,7 @@ import { FcGoogle } from 'react-icons/fc'
 import useAuth from '../../hooks/useAuth'
 import { toast } from 'react-hot-toast'
 import { TbFidgetSpinner } from 'react-icons/tb'
+import axios from 'axios'
 
 const SignUp = () => {
   const { createUser, updateUserProfile, signInWithGoogle, loading } = useAuth()
@@ -12,30 +13,51 @@ const SignUp = () => {
 
   // form submit handler
   const handleSubmit = async event => {
-    event.preventDefault()
-    const form = event.target
-    const name = form.name.value
-    const email = form.email.value
-    const password = form.password.value
+  event.preventDefault();
+  const form = event.target;
+  const name = form.name.value;
+  const email = form.email.value;
+  const password = form.password.value;
 
-    try {
-      //2. User Registration
-      const result = await createUser(email, password)
+  let user = null;
 
-      //3. Save username & profile photo
-      await updateUserProfile(
-        name,
-        'https://lh3.googleusercontent.com/a/ACg8ocKUMU3XIX-JSUB80Gj_bYIWfYudpibgdwZE1xqmAGxHASgdvCZZ=s96-c'
-      )
-      console.log(result)
+  try {
+    // 1. Create user
+    user = await createUser(email, password);
 
-      navigate(from, { replace: true })
-      toast.success('Signup Successful')
-    } catch (err) {
-      console.log(err)
-      toast.error(err?.message)
+    // 2. Upload image
+    const formData = new FormData();
+    formData.append("image", form.image.files[0]);
+
+    const imgResult = await axios.post(
+      `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_IMG_BB_KEY}`,
+      formData
+    );
+
+    const imgUrl = imgResult.data.data.display_url;
+
+    // 3. Update profile
+    await updateUserProfile(name, imgUrl);
+
+    // 4. Success
+    navigate(from, { replace: true });
+    toast.success("Signup Successful");
+
+  } catch (err) {
+    console.log(err);
+
+    // 🛑 If user was created but later steps failed → delete user
+    if (user) {
+      try {
+        await user.delete();
+      } catch (delErr) {
+        console.log("Failed to rollback user:", delErr);
+      }
     }
+
+    toast.error(err?.message || "Signup failed");
   }
+};
 
   // Handle Google Signin
   const handleGoogleSignIn = async () => {

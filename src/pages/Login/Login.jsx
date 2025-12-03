@@ -23,15 +23,14 @@ const Login = () => {
     const password = form.password.value
 
     try {
-      //User Login
       await signIn(email, password)
-
-      navigate(from, { replace: true })
       toast.success('Login Successful')
+      navigate(from, { replace: true })
     } catch (err) {
       console.log(err)
       toast.error(err?.message)
     }
+    setLoading(false)
   }
 
   // Handle Google Signin

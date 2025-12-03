@@ -1,9 +1,32 @@
 import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react'
 import { useState } from 'react'
+import toast from 'react-hot-toast';
+import useAxiosSecure from '../../hooks/useAxiosSecure';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-const UpdateUserRoleModal = ({ isOpen, closeModal, role }) => {
+const UpdateUserRoleModal = ({ isOpen, closeModal, role, userEmail }) => {
   const [updatedRole, setUpdatedRole] = useState(role)
+  const axis = useAxiosSecure();
+  const queryClient = useQueryClient();
+  const mutation = useMutation({
+    mutationFn: ({ email, role }) =>
+      axis.patch(`${import.meta.env.VITE_SERVER}/update-role`, { role, email }),
 
+    onSuccess: (res) => {
+      console.log(res)
+      toast.success(res?.data?.message);
+      queryClient.invalidateQueries(['add-seller']);
+    },
+
+    onError: (error) => {
+      console.error(error)
+      toast.error(error?.response?.data?.message || "Something went wrong!");
+    }
+  });
+  const handleSubmit = e => {
+    e.preventDefault()
+    mutation.mutate({ role: e.target.role.value, email: userEmail })
+  }
   return (
     <>
       <Dialog
@@ -24,7 +47,7 @@ const UpdateUserRoleModal = ({ isOpen, closeModal, role }) => {
               >
                 Update User Role
               </DialogTitle>
-              <form>
+              <form onSubmit={handleSubmit}>
                 <div>
                   <select
                     value={updatedRole}
@@ -33,14 +56,14 @@ const UpdateUserRoleModal = ({ isOpen, closeModal, role }) => {
                     name='role'
                     id=''
                   >
-                    <option value='customer'>Customer</option>
+                    <option value='user'>User</option>
                     <option value='seller'>Seller</option>
                     <option value='admin'>Admin</option>
                   </select>
                 </div>
                 <div className='flex mt-2 justify-around'>
                   <button
-                    type='button'
+                    type='submit'
                     className='cursor-pointer inline-flex justify-center rounded-md border border-transparent bg-green-100 px-4 py-2 text-sm font-medium text-green-900 hover:bg-green-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2'
                   >
                     Update

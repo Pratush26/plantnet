@@ -1,38 +1,54 @@
+import toast from "react-hot-toast"
+import useAxiosSecure from "../../hooks/useAxiosSecure"
+
 const AddPlantForm = () => {
+  const axis = useAxiosSecure()
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    const obj = {
+      title: e.target.title.value,
+      categories: e.target.categories.value,
+      description: e.target.description.value,
+      price: e.target.price.value,
+      stock: e.target.stock.value,
+      image: e.target.image.value,
+    }
+    console.log(obj)
+    try {
+      const res = await axis.post('/create-plant', obj);
+      if (res?.data?.success) toast.success(res.data.message || "Successfully created plant");
+      else toast.error(res.data.message || "Failed to create plant");
+      e.target.reset()
+    } catch (error) {
+      console.error(error);
+      toast.error(error?.response?.data?.message || "Something went wrong");
+    }
+  }
   return (
     <div className='w-full min-h-[calc(100vh-40px)] flex flex-col justify-center items-center text-gray-800 rounded-xl bg-gray-50'>
-      <form>
+      <form onSubmit={handleSubmit}>
         <div className='grid grid-cols-1 lg:grid-cols-2 gap-10'>
           <div className='space-y-6'>
             {/* Name */}
             <div className='space-y-1 text-sm'>
-              <label htmlFor='name' className='block text-gray-600'>
-                Name
+              <label htmlFor='title' className='block text-gray-600'>
+                Title
               </label>
               <input
                 className='w-full px-4 py-3 text-gray-800 border border-lime-300 focus:outline-lime-500 rounded-md bg-white'
-                name='name'
-                id='name'
+                name='title'
+                id='title'
                 type='text'
-                placeholder='Plant Name'
+                placeholder='Enter title'
                 required
               />
             </div>
             {/* Category */}
             <div className='space-y-1 text-sm'>
-              <label htmlFor='category' className='block text-gray-600 '>
+              <label htmlFor='categories' className='block text-gray-600 '>
                 Category
               </label>
-              <select
-                required
-                className='w-full px-4 py-3 border-lime-300 focus:outline-lime-500 rounded-md bg-white'
-                name='category'
-              >
-                <option value='Indoor'>Indoor</option>
-                <option value='Outdoor'>Outdoor</option>
-                <option value='Succulent'>Succulent</option>
-                <option value='Flowering'>Flowering</option>
-              </select>
+              <input type="text" name="categories" id="categories" placeholder="e.g. indoor, outdoor, flower" className="w-full px-4 py-3 text-gray-800 border border-lime-300 focus:outline-lime-500 rounded-md bg-white" />
             </div>
             {/* Description */}
             <div className='space-y-1 text-sm'>
@@ -49,7 +65,7 @@ const AddPlantForm = () => {
             </div>
           </div>
           <div className='space-y-6 flex flex-col'>
-            {/* Price & Quantity */}
+            {/* Price & stock */}
             <div className='flex justify-between gap-2'>
               {/* Price */}
               <div className='space-y-1 text-sm'>
@@ -66,23 +82,36 @@ const AddPlantForm = () => {
                 />
               </div>
 
-              {/* Quantity */}
+              {/* stock */}
               <div className='space-y-1 text-sm'>
-                <label htmlFor='quantity' className='block text-gray-600'>
-                  Quantity
+                <label htmlFor='stock' className='block text-gray-600'>
+                  Stock
                 </label>
                 <input
                   className='w-full px-4 py-3 text-gray-800 border border-lime-300 focus:outline-lime-500 rounded-md bg-white'
-                  name='quantity'
-                  id='quantity'
+                  name='stock'
+                  id='stock'
                   type='number'
-                  placeholder='Available quantity'
+                  placeholder='Available stock'
                   required
                 />
               </div>
             </div>
             {/* Image */}
-            <div className=' p-4  w-full  m-auto rounded-lg grow'>
+            <div className='space-y-1 text-sm'>
+              <label htmlFor='image' className='block text-gray-600'>
+                Image
+              </label>
+              <input
+                className='w-full px-4 py-3 text-gray-800 border border-lime-300 focus:outline-lime-500 rounded-md bg-white'
+                name='image'
+                id='image'
+                type='text'
+                placeholder='Enter image url'
+                required
+              />
+            </div>
+            {/* <div className=' p-4  w-full  m-auto rounded-lg grow'>
               <div className='file_upload px-5 py-3 relative border-4 border-dotted border-gray-300 rounded-lg'>
                 <div className='flex flex-col w-max mx-auto text-center'>
                   <label>
@@ -100,7 +129,7 @@ const AddPlantForm = () => {
                   </label>
                 </div>
               </div>
-            </div>
+            </div> */}
 
             {/* Submit Button */}
             <button

@@ -6,7 +6,6 @@ import PlantDetails from '../pages/PlantDetails/PlantDetails'
 import PrivateRoute from './PrivateRoute'
 import DashboardLayout from '../layouts/DashboardLayout'
 import AddPlant from '../pages/Dashboard/Seller/AddPlant'
-import ManageUsers from '../pages/Dashboard/Admin/ManageUsers'
 import Profile from '../pages/Dashboard/Common/Profile'
 import Statistics from '../pages/Dashboard/Common/Statistics'
 import MainLayout from '../layouts/MainLayout'
@@ -14,6 +13,7 @@ import MyInventory from '../pages/Dashboard/Seller/MyInventory'
 import ManageOrders from '../pages/Dashboard/Seller/ManageOrders'
 import MyOrders from '../pages/Dashboard/Customer/MyOrders'
 import { createBrowserRouter } from 'react-router'
+import AddSeller from '../pages/Dashboard/Admin/AddSeller'
 
 export const router = createBrowserRouter([
   {
@@ -56,8 +56,8 @@ export const router = createBrowserRouter([
         element: <PrivateRoute><MyInventory /></PrivateRoute>,
       },
       {
-        path: 'manage-users',
-        element: <PrivateRoute><ManageUsers /></PrivateRoute>,
+        path: 'add-seller',
+        element: <PrivateRoute><AddSeller /></PrivateRoute>,
       },
       {
         path: 'profile',

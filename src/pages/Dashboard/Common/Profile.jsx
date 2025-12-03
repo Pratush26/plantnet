@@ -2,8 +2,7 @@ import useAuth from '../../../hooks/useAuth'
 import coverImg from '../../../assets/images/cover.jpg'
 
 const Profile = () => {
-  const { user } = useAuth()
-
+  const { user, userRole } = useAuth()
   return (
     <div className='flex justify-center items-center h-screen'>
       <div className='bg-white shadow-lg rounded-2xl md:w-4/5 lg:w-3/5'>
@@ -15,17 +14,14 @@ const Profile = () => {
         <div className='flex flex-col items-center justify-center p-4 -mt-16'>
           <a href='#' className='relative block'>
             <img
-              alt='profile'
+              alt='profile picture'
               src={user?.photoURL}
               className='mx-auto object-cover rounded-full h-24 w-24  border-2 border-white '
             />
           </a>
 
-          <p className='p-2 px-4 text-xs text-white bg-lime-500 rounded-full'>
-            Customer
-          </p>
-          <p className='mt-2 text-xl font-medium text-gray-800 '>
-            User Id: {user?.uid}
+          <p className='p-2 px-4 text-xs text-white bg-lime-600 font-semibold rounded-full'>
+            {userRole}
           </p>
           <div className='w-full p-2 mt-4 rounded-lg'>
             <div className='flex flex-wrap items-center justify-between text-sm text-gray-600 '>

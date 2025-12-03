@@ -1,26 +1,43 @@
 import UserDataRow from '../../../components/Dashboard/TableRows/UserDataRow'
+import { useQuery } from "@tanstack/react-query"
+import useAxiosSecure from '../../../hooks/useAxiosSecure';
+import LoadingSpinner from '../../../components/Shared/LoadingSpinner';
+import EmptyState from '../../../components/Shared/EmptyState';
 
-const ManageUsers = () => {
+export default function AddSeller() {
+  const axis = useAxiosSecure();
+  const { data, isLoading, error } = useQuery({
+    queryKey: ['add-seller'],
+    queryFn: () => axis.get(`${import.meta.env.VITE_SERVER}/seller-request`).then(res => res.data),
+    staleTime: 5 * 60 * 1000,
+  })
+  if (isLoading) return (
+    <div className="flex items-center justify-center min-h-[80vh] w-full">
+      <LoadingSpinner />
+    </div>
+  )
+  if (error) return <EmptyState message={error.message} address='/' label="Back to Home"/>
+  console.log(data)
   return (
     <>
       <div className='container mx-auto px-4 sm:px-8'>
         <div className='py-8'>
           <div className='-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto'>
             <div className='inline-block min-w-full shadow rounded-lg overflow-hidden'>
-              <table className='min-w-full leading-normal'>
+              <table className='min-w-full table-auto'>
                 <thead>
                   <tr>
                     <th
                       scope='col'
                       className='px-5 py-3 bg-white  border-b border-gray-200 text-gray-800  text-left text-sm uppercase font-normal'
                     >
-                      Email
+                      Seller Info
                     </th>
                     <th
                       scope='col'
                       className='px-5 py-3 bg-white  border-b border-gray-200 text-gray-800  text-left text-sm uppercase font-normal'
                     >
-                      Role
+                      Requested Role
                     </th>
                     <th
                       scope='col'
@@ -38,7 +55,9 @@ const ManageUsers = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  <UserDataRow />
+                  {
+                    data.map(e => <UserDataRow e={e} key={e._id} />)
+                  }
                 </tbody>
               </table>
             </div>
@@ -48,5 +67,3 @@ const ManageUsers = () => {
     </>
   )
 }
-
-export default ManageUsers

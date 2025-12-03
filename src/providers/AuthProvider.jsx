@@ -10,11 +10,14 @@ import {
 } from 'firebase/auth'
 import { AuthContext } from './AuthContext'
 import { auth } from '../firebase/firebase.config'
+import useAxiosSecure from '../hooks/useAxiosSecure'
+import axios from 'axios'
 
 const googleProvider = new GoogleAuthProvider()
 
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null)
+  const [userRole, setUserRole] = useState(null)
   const [loading, setLoading] = useState(true)
 
   const createUser = (email, password) => {
@@ -49,6 +52,7 @@ const AuthProvider = ({ children }) => {
     const unsubscribe = onAuthStateChanged(auth, async currentUser => {
       console.log('CurrentUser-->', currentUser?.email)
       setUser(currentUser)
+      axios(`${import.meta.env.VITE_SERVER}/role?email=${currentUser?.email}`).then(res => setUserRole(res.data.role))
       setLoading(false)
     })
     return () => {
@@ -58,6 +62,7 @@ const AuthProvider = ({ children }) => {
 
   const authInfo = {
     user,
+    userRole,
     setUser,
     loading,
     setLoading,
