@@ -17,7 +17,6 @@ export default function AddSeller() {
     </div>
   )
   if (error) return <EmptyState message={error.message} address='/' label="Back to Home"/>
-  console.log(data)
   return (
     <>
       <div className='container mx-auto px-4 sm:px-8'>

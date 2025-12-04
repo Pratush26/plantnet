@@ -14,6 +14,7 @@ import ManageOrders from '../pages/Dashboard/Seller/ManageOrders'
 import MyOrders from '../pages/Dashboard/Customer/MyOrders'
 import { createBrowserRouter } from 'react-router'
 import AddSeller from '../pages/Dashboard/Admin/AddSeller'
+import AllPlantsPage from '../pages/AllPlants/AllPlants'
 
 export const router = createBrowserRouter([
   {
@@ -24,6 +25,10 @@ export const router = createBrowserRouter([
       {
         path: '/',
         element: <Home />,
+      },
+      {
+        path: 'all-plants',
+        element: <AllPlantsPage />
       },
       {
         path: 'plant/:id',

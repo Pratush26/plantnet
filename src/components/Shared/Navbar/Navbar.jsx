@@ -1,7 +1,7 @@
 import Container from '../Container'
 import { AiOutlineMenu } from 'react-icons/ai'
 import { useState } from 'react'
-import { Link } from 'react-router'
+import { Link, NavLink } from 'react-router'
 import useAuth from '../../../hooks/useAuth'
 import avatarImg from '../../../assets/images/placeholder.jpg'
 import logo from '../../../assets/images/logo-flat.png'
@@ -19,6 +19,9 @@ const Navbar = () => {
               <img src={logo} alt='logo' width='100' height='100' />
             </Link>
             {/* Dropdown Menu */}
+            <div>
+              <NavLink to='/all-plants'>All Plants</NavLink>
+            </div>
             <div className='relative'>
               <div className='flex flex-row items-center gap-3'>
                 {/* Dropdown btn */}

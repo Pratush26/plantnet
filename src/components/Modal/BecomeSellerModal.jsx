@@ -10,9 +10,10 @@ export default function BecomeSellerModal({ closeModal, isOpen }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    
     const obj = {
       address: e.target.location.value,
+      phone: e.target.phone.value,
       name: user?.displayName,
       requestedRole: "seller",
       image: user?.photoURL,
@@ -51,6 +52,8 @@ export default function BecomeSellerModal({ closeModal, isOpen }) {
             <div className='flex flex-col gap-2'>
               <label htmlFor="location" className='text-sm font-medium'>Location:</label>
               <input type="text" name="location" id="location" placeholder='Enter your/store location' className='bg-gray-200 px-4 py-2 rounded-lg focus:outline-none' required />
+              <label htmlFor="phone" className='text-sm font-medium'>Phone:</label>
+              <input type="tel" name="phone" id="phone" placeholder='Enter phone number' className='bg-gray-200 px-4 py-2 rounded-lg focus:outline-none' required />
             </div>
             <div className='flex mt-2 justify-around'>
               <button

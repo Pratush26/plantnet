@@ -6,58 +6,59 @@ import { TbFidgetSpinner } from 'react-icons/tb'
 import axios from 'axios'
 
 const SignUp = () => {
-  const { createUser, updateUserProfile, signInWithGoogle, loading } = useAuth()
+  const { createUser, updateUserProfile, signInWithGoogle, loading, setLoading } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
   const from = location.state || '/'
 
   // form submit handler
   const handleSubmit = async event => {
-  event.preventDefault();
-  const form = event.target;
-  const name = form.name.value;
-  const email = form.email.value;
-  const password = form.password.value;
+    event.preventDefault();
+    const form = event.target;
+    const name = form.name.value;
+    const email = form.email.value;
+    const password = form.password.value;
 
-  let user = null;
+    let user = null;
 
-  try {
-    // 1. Create user
-    user = await createUser(email, password);
+    try {
+      // 1. Create user
+      user = await createUser(email, password);
 
-    // 2. Upload image
-    const formData = new FormData();
-    formData.append("image", form.image.files[0]);
+      // 2. Upload image
+      const formData = new FormData();
+      formData.append("image", form.image.files[0]);
 
-    const imgResult = await axios.post(
-      `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_IMG_BB_KEY}`,
-      formData
-    );
+      const imgResult = await axios.post(
+        `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_IMG_BB_KEY}`,
+        formData
+      );
 
-    const imgUrl = imgResult.data.data.display_url;
+      const imgUrl = imgResult.data.data.display_url;
 
-    // 3. Update profile
-    await updateUserProfile(name, imgUrl);
+      // 3. Update profile
+      await updateUserProfile(name, imgUrl);
 
-    // 4. Success
-    navigate(from, { replace: true });
-    toast.success("Signup Successful");
+      // 4. Success
+      navigate(from, { replace: true });
+      toast.success("Signup Successful");
 
-  } catch (err) {
-    console.log(err);
+    } catch (err) {
+      console.log(err);
 
-    // 🛑 If user was created but later steps failed → delete user
-    if (user) {
-      try {
-        await user.delete();
-      } catch (delErr) {
-        console.log("Failed to rollback user:", delErr);
+      // 🛑 If user was created but later steps failed → delete user
+      if (user) {
+        try {
+          await user.delete();
+        } catch (delErr) {
+          console.log("Failed to rollback user:", delErr);
+        }
       }
-    }
 
-    toast.error(err?.message || "Signup failed");
-  }
-};
+      toast.error(err?.message || "Signup failed");
+    }
+    setLoading(false)
+  };
 
   // Handle Google Signin
   const handleGoogleSignIn = async () => {
@@ -71,6 +72,7 @@ const SignUp = () => {
       console.log(err)
       toast.error(err?.message)
     }
+    setLoading(false)
   }
   return (
     <div className='flex justify-center items-center min-h-screen bg-white'>
