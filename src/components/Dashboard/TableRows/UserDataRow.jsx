@@ -8,7 +8,7 @@ const UserDataRow = ({e}) => {
     <tr>
       <td className='px-5 py-5 border-b border-gray-200 bg-white text-sm'>
         <div className='flex items-center gap-2'>
-          <img src={e.image} alt="user image" className='h-10 aspect-square object-cover rounded-full' />
+          <img loading='lazy' src={e.image} alt="user image" className='h-10 aspect-square object-cover rounded-full' />
           <span>
             <p className='text-gray-900 font-semibold'>{e.name}</p>
             <p className='text-gray-900 text-sm'>{e.email}</p>
