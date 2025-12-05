@@ -1,17 +1,22 @@
 import toast from "react-hot-toast"
 import useAxiosSecure from "../../hooks/useAxiosSecure"
+import axios from "axios"
 
 const AddPlantForm = () => {
   const axis = useAxiosSecure()
   const handleSubmit = async (e) => {
     e.preventDefault()
+    const formData = new FormData();
+    formData.append("image", e.target.image.files[0]);
+
+    const imgResult = await axios.post(`https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_IMG_BB_KEY}`, formData);
     const obj = {
       title: e.target.title.value,
       categories: e.target.categories.value,
       description: e.target.description.value,
       price: e.target.price.value,
       stock: e.target.stock.value,
-      image: e.target.image.value,
+      image: imgResult.data.data.display_url,
     }
     console.log(obj)
     try {
@@ -98,30 +103,16 @@ const AddPlantForm = () => {
               </div>
             </div>
             {/* Image */}
-            <div className='space-y-1 text-sm'>
-              <label htmlFor='image' className='block text-gray-600'>
-                Image
-              </label>
-              <input
-                className='w-full px-4 py-3 text-gray-800 border border-lime-300 focus:outline-lime-500 rounded-md bg-white'
-                name='image'
-                id='image'
-                type='text'
-                placeholder='Enter image url'
-                required
-              />
-            </div>
-            {/* <div className=' p-4  w-full  m-auto rounded-lg grow'>
-              <div className='file_upload px-5 py-3 relative border-4 border-dotted border-gray-300 rounded-lg'>
+            <div className=' p-4  w-full  m-auto rounded-lg grow'>
+              <div className='file_upload px-5 py-3 border-4 border-dotted border-gray-300 rounded-lg'>
                 <div className='flex flex-col w-max mx-auto text-center'>
                   <label>
                     <input
-                      className='text-sm cursor-pointer w-36 hidden'
+                      className='text-sm cursor-pointer w-full'
                       type='file'
                       name='image'
                       id='image'
                       accept='image/*'
-                      hidden
                     />
                     <div className='bg-lime-500 text-white border border-gray-300 rounded font-semibold cursor-pointer p-1 px-3 hover:bg-lime-500'>
                       Upload
@@ -129,7 +120,7 @@ const AddPlantForm = () => {
                   </label>
                 </div>
               </div>
-            </div> */}
+            </div>
 
             {/* Submit Button */}
             <button
